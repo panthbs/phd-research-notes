@@ -17,9 +17,15 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '18'
+
+    - name: Clean and Install Dependencies
+      run: |
+        # 1. Clear old cache
+        rm -rf node_modules package-lock.json
+        npm init -y
         
-    - name: Install dependencies
-      run: npm install @notionhq/client@2.2.3 notion-to-md@3.1.1
+        # 2. Install the LATEST version
+        npm install @notionhq/client@latest notion-to-md@latest
       
     - name: Run Sync Script
       env:
