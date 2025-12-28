@@ -33,10 +33,20 @@ jobs:
         NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
       run: node scripts/sync.js
       
-    - name: Commit and Push changes
+    - name: Commit and Push
       run: |
         git config --global user.name "Notion Sync Bot"
         git config --global user.email "bot@noreply.github.com"
+        
+        # Add changes (if any)
         git add notes/
-        # Only commit if there are changes
-        git diff --quiet && git diff --staged --quiet || (git commit -m "Update notes from Notion" && git push)
+        
+        # CHECK: If 'git status' is clean, exit successfully (don't run commit)
+        if [ -z "$(git status --porcelain)" ]; then
+          echo "No changes to commit. Workflow finished successfully."
+          exit 0
+        fi
+        
+        # If we get here, there ARE changes
+        git commit -m "Update research notes from Notion"
+        git push
