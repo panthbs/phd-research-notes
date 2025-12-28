@@ -3,6 +3,22 @@ const { NotionToMarkdown } = require("notion-to-md");
 const fs = require("fs");
 const path = require("path");
 
+// --- DEBUGGING START ---
+console.log("Notion Client Version Check:");
+try {
+    const notionTest = new Client({ auth: "test" });
+    console.log("Client created successfully.");
+    console.log("Has databases?", !!notionTest.databases);
+    console.log("Has databases.query?", !!(notionTest.databases && notionTest.databases.query));
+    if (!notionTest.databases || !notionTest.databases.query) {
+        throw new Error("CRITICAL: The Notion Library is loaded, but methods are missing. Check npm install.");
+    }
+} catch (e) {
+    console.error("Initialization Failed:", e);
+    process.exit(1);
+}
+// --- DEBUGGING END ---
+
 // Config
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 const n2m = new NotionToMarkdown({ notionClient: notion });
